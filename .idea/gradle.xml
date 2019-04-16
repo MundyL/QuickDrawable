@@ -8,7 +8,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/quickdrawable" />
             <option value="$PROJECT_DIR$/quickdrawabledemo" />
           </set>
         </option>

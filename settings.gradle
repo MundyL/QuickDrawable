@@ -1,1 +1,1 @@
-include ':app', ':quickdrawabledemo'
+include ':quickdrawabledemo', ':quickdrawable'

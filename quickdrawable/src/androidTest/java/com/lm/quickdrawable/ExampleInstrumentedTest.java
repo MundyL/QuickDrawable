@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.lm.quickdrawable", appContext.getPackageName());
+        assertEquals("com.lm.quickdrawable.test", appContext.getPackageName());
     }
 }

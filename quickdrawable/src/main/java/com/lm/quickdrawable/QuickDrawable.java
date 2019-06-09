@@ -1,12 +1,18 @@
 package com.lm.quickdrawable;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,8 +22,6 @@ import static android.graphics.drawable.GradientDrawable.RECTANGLE;
 
 public class QuickDrawable {
 
-
-    private Context mContext;
 
 
 
@@ -50,9 +54,11 @@ public class QuickDrawable {
     //存放stateSet
     Map<Integer,Drawable> stateMap=new HashMap<>();
 
+    ColorStateList colorStateList;
 
-    public QuickDrawable(Context context){
-        this.mContext=context;
+
+    public QuickDrawable(){
+
 
     }
 
@@ -67,6 +73,12 @@ public class QuickDrawable {
         bottomLeftRadius=5;
     }
 
+    private void resetParms(){
+        iniParms();
+        colorStateList=null;
+        stateMap.clear();
+    }
+
     private Drawable createDrawable(){
         GradientDrawable drawable=new GradientDrawable();
         drawable.setShape(shape);
@@ -76,7 +88,8 @@ public class QuickDrawable {
         return drawable;
     }
 
-    public Drawable build(){
+
+    private Drawable build(){
         if(stateMap.size()>0){
             StateListDrawable stateListDrawable=new StateListDrawable();
             for (Map.Entry<Integer,Drawable> entry:stateMap.entrySet()){
@@ -87,20 +100,45 @@ public class QuickDrawable {
             return createDrawable();
         }
     }
+    public void into(View view){
+        Drawable drawable=build();
+        view.setBackground(drawable);
+        if(colorStateList!=null){
+            if(view instanceof TextView){
+                TextView tv= (TextView) view;
+                tv.setTextColor(colorStateList);
+            }
+        }
+        resetParms();
+    }
+
 
 
     public QuickDrawable border(){
-        borderWidth=Convert.dpToPx(mContext,1);;
+        borderWidth=Convert.dpToPx(1);;
         return this;
     }
     public QuickDrawable border(int width){
-        this.borderWidth=Convert.dpToPx(mContext,width);
+        this.borderWidth=Convert.dpToPx(width);
         return this;
     }
     public QuickDrawable borderColor(int color){
+        if(borderWidth==0&&dashWidth==0){
+            borderWidth=1;
+        }
         this.borderColor=color;
         return this;
     }
+
+    public QuickDrawable dash(int width){
+        this.dashWidth=width;
+        return this;
+    }
+    public QuickDrawable dashGap(int gap){
+        this.dashGap=gap;
+        return this;
+    }
+
 
     public QuickDrawable corner(){
 
@@ -111,10 +149,10 @@ public class QuickDrawable {
         return this;
     }
     public QuickDrawable corner(int topLeft,int topRight,int bottomLeft,int bottomRight){
-        this.topLeftRadius=Convert.dpToPx(mContext,topLeft);
-        this.topRightRadius=Convert.dpToPx(mContext,topRight);
-        this.bottomLeftRadius=Convert.dpToPx(mContext,bottomLeft);
-        this.bottomRightRadius=Convert.dpToPx(mContext,bottomRight);
+        this.topLeftRadius=Convert.dpToPx(topLeft);
+        this.topRightRadius=Convert.dpToPx(topRight);
+        this.bottomLeftRadius=Convert.dpToPx(bottomLeft);
+        this.bottomRightRadius=Convert.dpToPx(bottomRight);
         return this;
     }
 
@@ -141,10 +179,7 @@ public class QuickDrawable {
         stateMap.put(b?android.R.attr.state_pressed:-android.R.attr.state_pressed,drawable);
         return this;
     }
-    public QuickDrawable addPressResource(int resid,boolean b){
-        stateMap.put(b?android.R.attr.state_pressed:-android.R.attr.state_pressed, ContextCompat.getDrawable(mContext,resid));
-        return this;
-    }
+
 
     /**
      * 将之前的操作添加到state_pressed的drawable
@@ -173,10 +208,7 @@ public class QuickDrawable {
         stateMap.put(b?android.R.attr.state_enabled:-android.R.attr.state_enabled,drawable);
         return this;
     }
-    public QuickDrawable addEnableResource(int resid,boolean b){
-        stateMap.put(b?android.R.attr.state_enabled:-android.R.attr.state_enabled, ContextCompat.getDrawable(mContext,resid));
-        return this;
-    }
+
     public QuickDrawable addToEnable(boolean b){
         Drawable drawable=createDrawable();
         iniParms();
@@ -200,10 +232,6 @@ public class QuickDrawable {
         return this;
     }
 
-    public QuickDrawable addCheckedResource(int resid,boolean b){
-        stateMap.put(b?android.R.attr.state_checked:-android.R.attr.state_checked, ContextCompat.getDrawable(mContext,resid));
-        return this;
-    }
 
     public QuickDrawable addToChecked(boolean b){
         Drawable drawable=createDrawable();
@@ -220,5 +248,21 @@ public class QuickDrawable {
     }
 
 
+    public QuickDrawable textColor(int uncheck,int check){
+        // 颜色数组
+        int[] colors = new int[]{check,check, uncheck, uncheck, uncheck,uncheck, uncheck};
+
+// 颜色数组对应的状态
+        int[][] states = new int[7][];
+        states[0] = new int[]{android.R.attr.state_checked, android.R.attr.state_enabled};
+        states[1] = new int[]{android.R.attr.state_pressed, android.R.attr.state_enabled};
+        states[2] = new int[]{android.R.attr.state_enabled, android.R.attr.state_focused};
+        states[3] = new int[]{android.R.attr.state_enabled};
+        states[4] = new int[]{android.R.attr.state_focused};
+        states[5] = new int[]{android.R.attr.state_window_focused};
+        states[6] = new int[]{};
+        colorStateList=new ColorStateList(states,colors);
+        return this;
+    }
 
 }

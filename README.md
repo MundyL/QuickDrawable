@@ -87,7 +87,7 @@ QuickDrawable quickDrawable=new QuickDrawable();
                 .textColor(Color.RED,Color.WHITE)
                 .into(rbRight);
 ```
-这样我们就实现了下图这种我们经常用到的RadioButton切换效果
+
 
 
 
